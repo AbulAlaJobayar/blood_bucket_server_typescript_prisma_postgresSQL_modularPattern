@@ -1,12 +1,12 @@
 import { Server } from "http";
 import app from "./app";
+import config from "./app/config";
 
-const port = 5000;
 
 let server:Server
 function main() {
- server= app.listen(port, () => {
-    console.log(` blood Bucket listening on port ${port} `);
+ server= app.listen(config.port, () => {
+    console.log(` blood Bucket listening on port ${config.port} `);
   });
 }
 
