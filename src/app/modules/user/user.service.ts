@@ -1,7 +1,9 @@
+import { Prisma } from "@prisma/client";
 import config from "../../config";
 import prisma from "../../shared/prisma";
 import { TUser } from "./user.constants";
 import * as bcrypt from "bcrypt";
+import paginationHelper, { TOption } from "../../helper/paginationHelper";
 
 const createUserIntoDB = async (payload: TUser) => {
   const hashedPassword = await bcrypt.hash(
@@ -35,11 +37,11 @@ const createUserIntoDB = async (payload: TUser) => {
     };
 
     //create UserProfile
-    const userProfile = await transactionClient.userProfile.create({
+    await transactionClient.userProfile.create({
       data: profileData,
     });
     //find Data to show response
-    const findData:any = await transactionClient.user.findUnique({
+    const findData: any = await transactionClient.user.findUnique({
       where: {
         id: createUser.id,
       },
@@ -48,13 +50,77 @@ const createUserIntoDB = async (payload: TUser) => {
       },
     });
     return findData;
-   
   });
-  const {password,...rest}=result
+  const { password, ...rest } = result;
 
   return rest;
 };
 
+
+const getAllDonorFromDB = async (query: any,options:TOption) => {
+ const {limit,page,skip,sortBy,sortOrder}=paginationHelper(options)
+  if(query.bloodType){
+  const bloodOptimize=query?.bloodType
+  const finalBlood=bloodOptimize.slice(0,1);
+  query.bloodType=finalBlood
+ }
+  const {searchTerm,...filterData}=query
+  const andCondition:Prisma.UserWhereInput[] = [];
+  if (query.searchTerm) {
+    andCondition.push({
+      OR:['name','email','location','bloodType'].map((field)=>({
+        [field]:{
+          contains:query.searchTerm,
+          mode:"insensitive"
+        }
+      }))
+    });
+  }
+ if(Object.keys(filterData).length>0){
+  andCondition.push({
+    AND:Object.keys(filterData).map((key)=>({
+      [key]:{
+        contains:filterData[key]
+      }
+    }))
+  })
+ }
+
+
+const whereCondition:Prisma.UserWhereInput={AND:andCondition}
+  const result = await prisma.user.findMany({
+    where: whereCondition,
+    skip, 
+    take:limit,
+    orderBy:{
+      [sortBy]:sortOrder
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      bloodType: true,
+      location: true,
+      availability: true,
+      createdAt: true,
+      updateAt: true,
+      userProfile: true,
+    },
+  });
+const total= await prisma.user.count({
+  where:whereCondition
+})
+  return {
+    meta:{
+      page,
+      limit,
+      total
+    },
+    data:result
+  };
+};
+
 export const userService = {
   createUserIntoDB,
+  getAllDonorFromDB,
 };
