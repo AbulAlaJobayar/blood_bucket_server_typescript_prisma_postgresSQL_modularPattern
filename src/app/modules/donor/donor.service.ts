@@ -6,7 +6,17 @@ import { TJwtAuth, TRequestDonor } from "./donor.constant";
 const getAllDonorFromDB = async (query: any, options: TOption) => {
   const { limit, page, skip, sortBy, sortOrder } = paginationHelper(options);
  
-  const { searchTerm, ...filterData } = query;
+const { searchTerm, ...filterData } = query;
+
+// convert string to boolean
+if(filterData.availability && filterData.availability==="false"){
+  filterData.availability=false
+}
+
+if(filterData.availability && filterData.availability ==="true"){
+  filterData.availability=true
+}
+
   const andCondition: Prisma.UserWhereInput[] = [];
   if (query.searchTerm) {
     andCondition.push({
