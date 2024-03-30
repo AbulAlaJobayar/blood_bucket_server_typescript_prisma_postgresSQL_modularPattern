@@ -5,11 +5,7 @@ import { TJwtAuth, TRequestDonor } from "./donor.constant";
 
 const getAllDonorFromDB = async (query: any, options: TOption) => {
   const { limit, page, skip, sortBy, sortOrder } = paginationHelper(options);
-  if (query.bloodType) {
-    const bloodOptimize = query?.bloodType;
-    const finalBlood = bloodOptimize.slice(0, 1);
-    query.bloodType = finalBlood;
-  }
+ 
   const { searchTerm, ...filterData } = query;
   const andCondition: Prisma.UserWhereInput[] = [];
   if (query.searchTerm) {
@@ -26,7 +22,7 @@ const getAllDonorFromDB = async (query: any, options: TOption) => {
     andCondition.push({
       AND: Object.keys(filterData).map((key) => ({
         [key]: {
-          contains: filterData[key],
+          equals: filterData[key],
         },
       })),
     });
