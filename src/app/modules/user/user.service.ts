@@ -1,9 +1,9 @@
-import { Prisma } from "@prisma/client";
+import { UserProfile } from "@prisma/client";
 import config from "../../config";
 import prisma from "../../shared/prisma";
+import { TJwtAuth } from "../donor/donor.constant";
 import { TUser } from "./user.constants";
 import * as bcrypt from "bcrypt";
-import paginationHelper, { TOption } from "../../helper/paginationHelper";
 
 const createUserIntoDB = async (payload: TUser) => {
   const hashedPassword = await bcrypt.hash(
@@ -56,71 +56,37 @@ const createUserIntoDB = async (payload: TUser) => {
   return rest;
 };
 
-
-const getAllDonorFromDB = async (query: any,options:TOption) => {
- const {limit,page,skip,sortBy,sortOrder}=paginationHelper(options)
-  if(query.bloodType){
-  const bloodOptimize=query?.bloodType
-  const finalBlood=bloodOptimize.slice(0,1);
-  query.bloodType=finalBlood
- }
-  const {searchTerm,...filterData}=query
-  const andCondition:Prisma.UserWhereInput[] = [];
-  if (query.searchTerm) {
-    andCondition.push({
-      OR:['name','email','location','bloodType'].map((field)=>({
-        [field]:{
-          contains:query.searchTerm,
-          mode:"insensitive"
-        }
-      }))
-    });
-  }
- if(Object.keys(filterData).length>0){
-  andCondition.push({
-    AND:Object.keys(filterData).map((key)=>({
-      [key]:{
-        contains:filterData[key]
-      }
-    }))
-  })
- }
-
-
-const whereCondition:Prisma.UserWhereInput={AND:andCondition}
-  const result = await prisma.user.findMany({
-    where: whereCondition,
-    skip, 
-    take:limit,
-    orderBy:{
-      [sortBy]:sortOrder
+const getMyProfileIntoDB = async (user: TJwtAuth) => {
+  const result = await prisma.user.findUnique({
+    where: {
+      id: user.id,
     },
     select: {
       id: true,
       name: true,
       email: true,
-      bloodType: true,
       location: true,
+      bloodType: true,
       availability: true,
-      createdAt: true,
-      updateAt: true,
-      userProfile: true,
+      userProfile:true
     },
   });
-const total= await prisma.user.count({
-  where:whereCondition
-})
-  return {
-    meta:{
-      page,
-      limit,
-      total
-    },
-    data:result
-  };
+  return result;
 };
+
+const updateUserProfile=async(payload:Partial<UserProfile>,user:TJwtAuth)=>{
+console.log(payload, user)
+  const result=await prisma.userProfile.update({
+  where:{
+    userId:user.id
+  },
+  data:payload
+})
+return result
+}
 
 export const userService = {
   createUserIntoDB,
-  getAllDonorFromDB,
+  getMyProfileIntoDB,
+  updateUserProfile
 };

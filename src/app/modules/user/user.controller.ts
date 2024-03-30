@@ -2,9 +2,10 @@ import httpStatus from "http-status";
 import { userService } from "./user.service";
 import catchAsync from "../../shared/catchAsync";
 import sendResponse from "../../shared/sendResponse";
-import pick from "../../helper/pick";
+import { Request, Response } from "express";
 
-const createUserIntoDB = catchAsync(async (req, res) => {
+
+const createUserIntoDB = catchAsync(async (req:Request, res:Response) => {
   const result = await userService.createUserIntoDB(req.body);
   sendResponse(res, {
     status: httpStatus.CREATED,
@@ -13,22 +14,29 @@ const createUserIntoDB = catchAsync(async (req, res) => {
     data: result,
   });
 });
-const getAllDonorFromDB= catchAsync(async (req, res) => {
- 
- const filters=pick(req.query,['availability','bloodType','searchTerm'])
- const options=pick(req.query,['limit','page','sortBy','sortOrder']) 
- const result = await userService.getAllDonorFromDB(filters,options);
+const getMyProfileIntoDB = catchAsync(async (req:Request & {user?:any}, res:Response) => {
+  const result = await userService.getMyProfileIntoDB(req.user);
   sendResponse(res, {
     status: httpStatus.OK,
     success: true,
-    message: "Donors successfully found",
-    meta:result.meta,
-    data: result.data,
+    message: "Profile retrieved successfully",
+    data: result,
+  });
+});
+const updateUserProfile = catchAsync(async (req:Request & {user?:any}, res:Response) => {
+  const result = await userService.updateUserProfile(req.body,req.user);
+  sendResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: "User profile updated successfully",
+    data: result,
   });
 });
 
 
+
 export const userController={
         createUserIntoDB,
-        getAllDonorFromDB    
+        getMyProfileIntoDB,
+        updateUserProfile
 }

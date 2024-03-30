@@ -6,6 +6,7 @@ import globalErrorHandler from "./app/middleware/globalErrorHandler";
 import notFound from "./app/middleware/notFound";
 import { authRoute } from "./app/modules/auth/auth.router";
 import cookieParser from "cookie-parser"
+import { donorRouter } from "./app/modules/donor/donor.route";
 const app: Application = express();
 
 //middleware
@@ -15,6 +16,7 @@ app.use(cookieParser())
 // user Route
 app.use("/api", userRoute);
 app.use("/api",authRoute);
+app.use("/api",donorRouter)
 
 
 app.get("/", async (req, res) => {
