@@ -18,6 +18,18 @@ const getAllDonorFromDB = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getByIdFromDB = catchAsync(
+  async (req: Request , res: Response) => {
+    const { id } = req.params;
+    const result = await donorService.getByIdFromDB(id);
+    sendResponse(res, {
+      status: httpStatus.OK,
+      success: true,
+      message: "Donor Retrieve Successfully",
+      data: result,
+    });
+  }
+);
 const requestDonorForBlood = catchAsync(
   async (req: Request & {user?:any} , res: Response) => {
     const result = await donorService.requestDonorForBlood(req.body, req.user);
@@ -59,5 +71,6 @@ export const donorController = {
   getAllDonorFromDB,
   requestDonorForBlood,
   getMyDonationRequest,
-  updateRequesterRequest
+  updateRequesterRequest,
+  getByIdFromDB
 };

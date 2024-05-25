@@ -1,22 +1,22 @@
 import { Prisma, RequestStatus, User } from "@prisma/client";
 import prisma from "../../shared/prisma";
 import paginationHelper, { TOption } from "../../helper/paginationHelper";
-import {TRequestDonor } from "./donor.constant";
+import { TRequestDonor } from "./donor.constant";
 import { JwtPayload } from "jsonwebtoken";
 
 const getAllDonorFromDB = async (query: any, options: TOption) => {
   const { limit, page, skip, sortBy, sortOrder } = paginationHelper(options);
- 
-const { searchTerm, ...filterData } = query;
 
-// convert string to boolean
-if(filterData.availability && filterData.availability==="false"){
-  filterData.availability=false
-}
+  const { searchTerm, ...filterData } = query;
 
-if(filterData.availability && filterData.availability ==="true"){
-  filterData.availability=true
-}
+  // convert string to boolean
+  if (filterData.availability && filterData.availability === "false") {
+    filterData.availability = false;
+  }
+
+  if (filterData.availability && filterData.availability === "true") {
+    filterData.availability = true;
+  }
 
   const andCondition: Prisma.UserWhereInput[] = [];
   if (query.searchTerm) {
@@ -71,9 +71,19 @@ if(filterData.availability && filterData.availability ==="true"){
     data: result,
   };
 };
+
+const getByIdFromDB = async (id: string) => {
+  const result = prisma.user.findUnique({
+    where: { id },
+    include: { donor: true,userProfile:true,requester:true, },
+  });
+
+
+  return result
+};
 const requestDonorForBlood = async (
   payload: TRequestDonor,
-  userInfo:JwtPayload
+  userInfo: JwtPayload
 ) => {
   const userData = {
     donorId: payload.donorId,
@@ -170,6 +180,7 @@ const updateRequesterRequest = async (
 
 export const donorService = {
   getAllDonorFromDB,
+  getByIdFromDB,
   requestDonorForBlood,
   getMyDonationRequest,
   updateRequesterRequest,

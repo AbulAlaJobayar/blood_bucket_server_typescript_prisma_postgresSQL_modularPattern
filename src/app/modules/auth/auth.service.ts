@@ -114,7 +114,7 @@ const resetPassword = async (payload: { email: string }) => {
   const token = jwtHelper.generateToken(
     { id: userData.id, email: userData.email },
     config.forgot_password_secret as Secret,
-    config.forgot_password_expire_in
+    config.forgot_password_expire_in as string
   );
 
   //https://localhost:3000/reset_password?id=12345&token=qwer

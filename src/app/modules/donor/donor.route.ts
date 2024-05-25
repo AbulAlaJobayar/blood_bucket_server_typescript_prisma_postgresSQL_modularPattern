@@ -8,6 +8,7 @@ import auth from "../../middleware/auth"
 
 const route=Router()
 route.get('/donor-list',donorController.getAllDonorFromDB)
+route.get('/donor/:id',donorController.getByIdFromDB)
 route.post('/donation-request',auth(),validateRequest(donarValidationSchema.requestDonorForBlood), donorController.requestDonorForBlood)
 route.get('/donation-request',auth(), donorController.getMyDonationRequest)
 route.put('/donation-request/:requestId',auth(), donorController.updateRequesterRequest)
