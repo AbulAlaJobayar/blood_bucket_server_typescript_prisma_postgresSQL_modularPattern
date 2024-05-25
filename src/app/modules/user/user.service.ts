@@ -34,6 +34,7 @@ const createUserIntoDB = async (payload: TUser) => {
       bio: payload.bio,
       age: payload.age,
       lastDonationDate: payload.lastDonationDate,
+      donateblood:payload.donateblood
     };
 
     //create UserProfile

@@ -7,4 +7,5 @@ export type TUser= {
         age: number
         bio: string
         lastDonationDate: string
+        donateblood:string
       }
