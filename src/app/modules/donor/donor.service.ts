@@ -1,7 +1,8 @@
 import { Prisma, RequestStatus, User } from "@prisma/client";
 import prisma from "../../shared/prisma";
 import paginationHelper, { TOption } from "../../helper/paginationHelper";
-import { TJwtAuth, TRequestDonor } from "./donor.constant";
+import {TRequestDonor } from "./donor.constant";
+import { JwtPayload } from "jsonwebtoken";
 
 const getAllDonorFromDB = async (query: any, options: TOption) => {
   const { limit, page, skip, sortBy, sortOrder } = paginationHelper(options);
@@ -72,7 +73,7 @@ if(filterData.availability && filterData.availability ==="true"){
 };
 const requestDonorForBlood = async (
   payload: TRequestDonor,
-  userInfo: TJwtAuth
+  userInfo:JwtPayload
 ) => {
   const userData = {
     donorId: payload.donorId,
@@ -118,7 +119,7 @@ const requestDonorForBlood = async (
     donor: result.rest,
   };
 };
-const getMyDonationRequest = async (payload: TJwtAuth) => {
+const getMyDonationRequest = async (payload: JwtPayload) => {
   const result: any = await prisma.request.findMany({
     where: {
       donorId: payload.id,

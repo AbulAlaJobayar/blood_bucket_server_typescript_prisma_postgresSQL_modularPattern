@@ -1,9 +1,9 @@
 import { UserProfile } from "@prisma/client";
 import config from "../../config";
 import prisma from "../../shared/prisma";
-import { TJwtAuth } from "../donor/donor.constant";
 import { TUser } from "./user.constants";
 import * as bcrypt from "bcrypt";
+import { JwtPayload } from "jsonwebtoken";
 
 const createUserIntoDB = async (payload: TUser) => {
   const hashedPassword = await bcrypt.hash(
@@ -56,7 +56,7 @@ const createUserIntoDB = async (payload: TUser) => {
   return rest;
 };
 
-const getMyProfileIntoDB = async (user: TJwtAuth) => {
+const getMyProfileIntoDB = async (user: JwtPayload) => {
   const result = await prisma.user.findUnique({
     where: {
       id: user.id,
@@ -74,8 +74,8 @@ const getMyProfileIntoDB = async (user: TJwtAuth) => {
   return result;
 };
 
-const updateUserProfile=async(payload:Partial<UserProfile>,user:TJwtAuth)=>{
-console.log(payload, user)
+const updateUserProfile=async(payload:Partial<UserProfile>,user:JwtPayload)=>{
+
   const result=await prisma.userProfile.update({
   where:{
     userId:user.id

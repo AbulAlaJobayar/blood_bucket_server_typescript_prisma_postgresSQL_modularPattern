@@ -7,10 +7,3 @@ export type TRequestDonor= {
         reason: string
       }
 
-export type TJwtAuth={
-  id: string;
-  name: string;
-  email: string;
-  iat: number;
-  exp: number;
-}

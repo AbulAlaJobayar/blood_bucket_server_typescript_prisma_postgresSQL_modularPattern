@@ -19,7 +19,7 @@ const getAllDonorFromDB = catchAsync(async (req: Request, res: Response) => {
 });
 
 const requestDonorForBlood = catchAsync(
-  async (req: Request & { user?: any }, res: Response) => {
+  async (req: Request & {user?:any} , res: Response) => {
     const result = await donorService.requestDonorForBlood(req.body, req.user);
     sendResponse(res, {
       status: httpStatus.CREATED,
