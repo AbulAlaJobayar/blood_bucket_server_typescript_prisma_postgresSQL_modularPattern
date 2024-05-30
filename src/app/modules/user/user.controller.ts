@@ -23,6 +23,15 @@ const getMyProfileIntoDB = catchAsync(async (req:Request & {user?:any}, res:Resp
     data: result,
   });
 });
+const getAllProfileIntoDB = catchAsync(async (req:Request , res:Response) => {
+  const result = await userService.getAllProfileIntoDB();
+  sendResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: "Profiles retrieved successfully",
+    data: result,
+  });
+});
 const updateUserProfile = catchAsync(async (req:Request & {user?:any}, res:Response) => {
   const result = await userService.updateUserProfile(req.body,req.user);
   sendResponse(res, {
@@ -32,11 +41,25 @@ const updateUserProfile = catchAsync(async (req:Request & {user?:any}, res:Respo
     data: result,
   });
 });
-
+const updateUserRole = catchAsync(
+  async (req: Request , res: Response) => {
+    const {id}=req.params
+    
+    const result = await userService.updateUserRole(req.body,id);
+    sendResponse(res, {
+      status: httpStatus.OK,
+      success: true,
+      message: "Donation request status successfully updated",
+      data: result,
+    });
+  }
+);
 
 
 export const userController={
         createUserIntoDB,
         getMyProfileIntoDB,
-        updateUserProfile
+        getAllProfileIntoDB,
+        updateUserProfile,
+        updateUserRole
 }

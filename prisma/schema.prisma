@@ -20,6 +20,8 @@ model User {
   password     String
   bloodType    String
   location     String
+  role         String       @default("user")
+  accountStatus String @default("activate")
   availability Boolean      @default(false)
   createdAt    DateTime     @default(now())
   updateAt     DateTime     @updatedAt
@@ -35,8 +37,8 @@ model UserProfile {
   userId           String   @unique
   bio              String
   age              Int
-  lastDonationDate String 
-  donateblood String @default("yes")
+  lastDonationDate String
+  donateblood      String   @default("yes")
   createdAt        DateTime @default(now())
   updateAt         DateTime @updatedAt
   user             User     @relation(fields: [userId], references: [id])

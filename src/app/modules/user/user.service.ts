@@ -74,6 +74,20 @@ const getMyProfileIntoDB = async (user: JwtPayload) => {
   });
   return result;
 };
+const getAllProfileIntoDB = async () => {
+  const result = await prisma.user.findMany({
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      location: true,
+      bloodType: true,
+      availability: true,
+      userProfile:true
+    },
+  });
+  return result;
+};
 
 const updateUserProfile=async(payload:Partial<UserProfile>,user:JwtPayload)=>{
 
@@ -85,9 +99,23 @@ const updateUserProfile=async(payload:Partial<UserProfile>,user:JwtPayload)=>{
 })
 return result
 }
+const updateUserRole= async (
+  payload:any,
+  id: any
+) => {
+  const result = await prisma.user.update({
+    where: {
+      id: id,
+    },
+    data:payload
+  });
+  return result;
+};
 
 export const userService = {
   createUserIntoDB,
+  getAllProfileIntoDB,
   getMyProfileIntoDB,
-  updateUserProfile
+  updateUserProfile,
+  updateUserRole
 };

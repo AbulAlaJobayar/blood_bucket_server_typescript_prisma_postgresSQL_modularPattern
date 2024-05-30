@@ -75,11 +75,10 @@ const getAllDonorFromDB = async (query: any, options: TOption) => {
 const getByIdFromDB = async (id: string) => {
   const result = prisma.user.findUnique({
     where: { id },
-    include: { donor: true,userProfile:true,requester:true, },
+    include: { donor: true, userProfile: true, requester: true },
   });
 
-
-  return result
+  return result;
 };
 const requestDonorForBlood = async (
   payload: TRequestDonor,
@@ -161,6 +160,34 @@ const getMyDonationRequest = async (payload: JwtPayload) => {
 
   return result;
 };
+const getMyRequest = async (payload: JwtPayload) => {
+  const result = await prisma.request.findMany({
+    where: { requesterId: payload.id },
+    include: {
+      donor: {
+        select: {
+          name: true,
+          email: true,
+          bloodType: true,
+          location: true,
+          availability: true,
+        },
+      },
+    },
+  });
+  return result.map((request) => ({
+    id: request.id,
+    phoneNumber: request.phoneNumber,
+    dateOfDonation: request.dateOfDonation,
+    hospitalName: request.hospitalName,
+    hospitalAddress: request.hospitalAddress,
+    reason: request.reason,
+    requestStatus: request.requestStatus,
+    donorName: request.donor?.name,
+    blood: request.donor?.bloodType,
+    donorInfo: request.requestStatus === "APPROVED" ? request.donor : null,
+  }));
+};
 
 const updateRequesterRequest = async (
   payload: { status: RequestStatus },
@@ -183,5 +210,6 @@ export const donorService = {
   getByIdFromDB,
   requestDonorForBlood,
   getMyDonationRequest,
+  getMyRequest,
   updateRequesterRequest,
 };

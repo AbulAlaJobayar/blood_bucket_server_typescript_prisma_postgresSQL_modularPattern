@@ -11,6 +11,7 @@ route.get('/donor-list',donorController.getAllDonorFromDB)
 route.get('/donor/:id',donorController.getByIdFromDB)
 route.post('/donation-request',auth(),validateRequest(donarValidationSchema.requestDonorForBlood), donorController.requestDonorForBlood)
 route.get('/donation-request',auth(), donorController.getMyDonationRequest)
+route.get('/my-request',auth(), donorController.getMyRequest)
 route.put('/donation-request/:requestId',auth(), donorController.updateRequesterRequest)
 
 export const donorRouter=route
