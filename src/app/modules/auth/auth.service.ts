@@ -84,7 +84,7 @@ const changedPassword = async (user: JwtPayload, payload: TChangePassword) => {
     },
   });
 
-  const isValidPassword = bcrypt.compare(
+  const isValidPassword = await bcrypt.compare(
     payload.oldPassword,
     userData.password
   );
