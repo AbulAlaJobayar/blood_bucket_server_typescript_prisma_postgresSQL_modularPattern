@@ -6,7 +6,7 @@ import { donorService } from "./donor.service";
 import { Request, Response } from "express";
 
 const getAllDonorFromDB = catchAsync(async (req: Request, res: Response) => {
-  const filters = pick(req.query, ["availability", "bloodType", "searchTerm"]);
+  const filters = pick(req.query, ["availability","location", "bloodType", "searchTerm"]);
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
   const result = await donorService.getAllDonorFromDB(filters, options);
   sendResponse(res, {
