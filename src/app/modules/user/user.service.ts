@@ -81,6 +81,8 @@ const getAllProfileIntoDB = async () => {
       name: true,
       email: true,
       location: true,
+      role:true,
+      accountStatus:true,
       bloodType: true,
       availability: true,
       userProfile:true
