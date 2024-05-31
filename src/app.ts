@@ -10,7 +10,10 @@ import { donorRouter } from "./app/modules/donor/donor.route";
 const app: Application = express();
 
 //middleware
-app.use(cors());
+app.use(cors({
+  origin: ['https://bloodbucket-abulalajobayargmailcoms-projects.vercel.app', "*"],
+  credentials: true,
+}));
 app.use(express.json());
 app.use(cookieParser())
 // user Route
