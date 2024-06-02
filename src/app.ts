@@ -11,7 +11,7 @@ const app: Application = express();
 
 //middleware
 app.use(cors({
-  origin: ['https://bloodbucket-abulalajobayargmailcoms-projects.vercel.app', "*"],
+  origin:  ['http://localhost:3000','https://blood-bucket-client.vercel.app','*'],
   credentials: true,
 }));
 app.use(cookieParser())
