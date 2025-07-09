@@ -7,6 +7,8 @@ import { Request, Response } from "express";
 
 const createUserIntoDB = catchAsync(async (req:Request, res:Response) => {
   const result = await userService.createUserIntoDB(req.body);
+  
+
   sendResponse(res, {
     status: httpStatus.CREATED,
     success: true,

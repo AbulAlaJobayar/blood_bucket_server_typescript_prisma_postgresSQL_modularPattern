@@ -1,14 +1,5 @@
-/*
-  Warnings:
-
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-
-*/
 -- CreateEnum
 CREATE TYPE "RequestStatus" AS ENUM ('PENDDING', 'APPROVED', 'REJECTED');
-
--- DropTable
-DROP TABLE "User";
 
 -- CreateTable
 CREATE TABLE "user" (
@@ -18,6 +9,8 @@ CREATE TABLE "user" (
     "password" TEXT NOT NULL,
     "bloodType" TEXT NOT NULL,
     "location" TEXT NOT NULL,
+    "role" TEXT NOT NULL DEFAULT 'user',
+    "accountStatus" TEXT NOT NULL DEFAULT 'activate',
     "availability" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updateAt" TIMESTAMP(3) NOT NULL,
@@ -32,6 +25,7 @@ CREATE TABLE "userProfile" (
     "bio" TEXT NOT NULL,
     "age" INTEGER NOT NULL,
     "lastDonationDate" TEXT NOT NULL,
+    "donateblood" TEXT NOT NULL DEFAULT 'yes',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updateAt" TIMESTAMP(3) NOT NULL,
 
@@ -39,7 +33,7 @@ CREATE TABLE "userProfile" (
 );
 
 -- CreateTable
-CREATE TABLE "Request" (
+CREATE TABLE "request" (
     "id" TEXT NOT NULL,
     "donorId" TEXT,
     "requesterId" TEXT,
@@ -52,7 +46,7 @@ CREATE TABLE "Request" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updateAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Request_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "request_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -65,7 +59,7 @@ CREATE UNIQUE INDEX "userProfile_userId_key" ON "userProfile"("userId");
 ALTER TABLE "userProfile" ADD CONSTRAINT "userProfile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Request" ADD CONSTRAINT "Request_donorId_fkey" FOREIGN KEY ("donorId") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "request" ADD CONSTRAINT "request_donorId_fkey" FOREIGN KEY ("donorId") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Request" ADD CONSTRAINT "Request_requesterId_fkey" FOREIGN KEY ("requesterId") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "request" ADD CONSTRAINT "request_requesterId_fkey" FOREIGN KEY ("requesterId") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
